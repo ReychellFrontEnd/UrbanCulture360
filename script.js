@@ -1,36 +1,209 @@
-// ===== FUNCIONES BÁSICAS DE INTERACTIVIDAD =====
+// ===== HEADER DINÁMICO CON EFECTO DE SCROLL =====
 
-// Efecto de scroll suave para el menú horizontal
-const navLinks = document.querySelectorAll('.nav-link');
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
+const initDynamicHeader = () => {
+    const header = document.getElementById('mainHeader');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (!header) return;
+    
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    
+    const updateHeader = () => {
+        const scrollY = window.scrollY;
         
-        if (targetSection) {
-            targetSection.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
+        if (scrollY > 100) {
+            header.classList.add('scrolled');
+            
+            // Efecto adicional: hacer el header más transparente cuando se hace scroll hacia arriba rápidamente
+            if (scrollY < lastScrollY - 10) {
+                header.style.transform = 'translateY(0)';
+            } else if (scrollY > lastScrollY + 10) {
+                header.style.transform = 'translateY(0)';
+            }
+        } else {
+            header.classList.remove('scrolled');
+            header.style.transform = 'translateY(0)';
         }
+        
+        lastScrollY = scrollY;
+        ticking = false;
+    };
+    
+    const onScroll = () => {
+        if (!ticking) {
+            requestAnimationFrame(updateHeader);
+            ticking = true;
+        }
+    };
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
+    
+    // Inicializar estado
+    updateHeader();
+};
+
+// ===== NAVEGACIÓN MEJORADA CON FLECHAS DESLIZANTES =====
+
+const initNavScroll = () => {
+    const navMenu = document.getElementById('navMenu');
+    const navArrowLeft = document.getElementById('navArrowLeft');
+    const navArrowRight = document.getElementById('navArrowRight');
+    const navContainer = document.querySelector('.nav-container');
+    
+    if (!navMenu || !navArrowLeft || !navArrowRight) return;
+    
+    let scrollPosition = 0;
+    const scrollStep = 150;
+    
+    // Función para actualizar la visibilidad de las flechas
+    const updateArrowVisibility = () => {
+        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
+        
+        // Flecha izquierda
+        if (scrollPosition <= 0) {
+            navArrowLeft.classList.add('disabled');
+        } else {
+            navArrowLeft.classList.remove('disabled');
+        }
+        
+        // Flecha derecha
+        if (scrollPosition >= maxScroll) {
+            navArrowRight.classList.add('disabled');
+        } else {
+            navArrowRight.classList.remove('disabled');
+        }
+        
+        // Ocultar flechas si no hay overflow
+        if (navMenu.scrollWidth <= navContainer.clientWidth) {
+            navArrowLeft.style.display = 'none';
+            navArrowRight.style.display = 'none';
+        } else {
+            navArrowLeft.style.display = 'flex';
+            navArrowRight.style.display = 'flex';
+        }
+    };
+    
+    // Función para desplazar el menú
+    const scrollMenu = (direction) => {
+        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
+        
+        if (direction === 'left') {
+            scrollPosition = Math.max(0, scrollPosition - scrollStep);
+        } else {
+            scrollPosition = Math.min(maxScroll, scrollPosition + scrollStep);
+        }
+        
+        navMenu.style.transform = `translateX(-${scrollPosition}px)`;
+        updateArrowVisibility();
+    };
+    
+    // Event listeners para las flechas
+    navArrowLeft.addEventListener('click', () => scrollMenu('left'));
+    navArrowRight.addEventListener('click', () => scrollMenu('right'));
+    
+    // También permitir desplazamiento con rueda del mouse
+    navContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
+        
+        if (e.deltaY > 0) {
+            scrollPosition = Math.min(maxScroll, scrollPosition + scrollStep);
+        } else {
+            scrollPosition = Math.max(0, scrollPosition - scrollStep);
+        }
+        
+        navMenu.style.transform = `translateX(-${scrollPosition}px)`;
+        updateArrowVisibility();
     });
-});
+    
+    // Actualizar visibilidad al cargar y al redimensionar
+    window.addEventListener('load', updateArrowVisibility);
+    window.addEventListener('resize', updateArrowVisibility);
+    
+    // Inicializar estado
+    updateArrowVisibility();
+};
+
+// ===== SCROLL SUAVE MEJORADO CON INDICADOR ACTIVO =====
+
+const initSmoothScroll = () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    
+    // Función para actualizar el enlace activo
+    const updateActiveLink = () => {
+        let current = '';
+        const scrollY = window.pageYOffset + 150; // Offset para activar antes
+        
+        sections.forEach(section => {
+            const sectionHeight = section.offsetHeight;
+            const sectionTop = section.offsetTop - 100;
+            
+            if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    };
+    
+    // Event listeners para scroll suave
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                // Remover activo de todos los enlaces
+                navLinks.forEach(l => l.classList.remove('active'));
+                // Agregar activo al enlace clickeado
+                link.classList.add('active');
+                
+                const targetPosition = targetSection.offsetTop - 80;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Actualizar enlace activo al hacer scroll
+    window.addEventListener('scroll', updateActiveLink);
+    window.addEventListener('load', updateActiveLink);
+};
+
+// ===== FUNCIONES BÁSICAS DE INTERACTIVIDAD =====
 
 // Botón explorar con efecto
 const explorarBtn = document.getElementById('explorarBtn');
-explorarBtn.addEventListener('click', () => {
-    // Animación de pulso
-    explorarBtn.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-        explorarBtn.style.transform = 'scale(1)';
-    }, 150);
-    
-    // Desplazamiento suave a la sección de artistas
-    document.getElementById('artistas').scrollIntoView({ 
-        behavior: 'smooth' 
+if (explorarBtn) {
+    explorarBtn.addEventListener('click', () => {
+        // Animación de pulso
+        explorarBtn.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            explorarBtn.style.transform = 'scale(1)';
+        }, 150);
+        
+        // Desplazamiento suave a la sección de artistas
+        const artistasSection = document.getElementById('artistas');
+        if (artistasSection) {
+            const targetPosition = artistasSection.offsetTop - 80;
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
     });
-});
+}
 
 // ===== FUNCIONALIDAD ARTISTAS (Mostrar/ocultar detalles) =====
 
@@ -41,6 +214,8 @@ verMasBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         const targetId = e.target.getAttribute('data-target');
         const detalles = document.getElementById(targetId);
+        
+        if (!detalles) return;
         
         // Cerrar todos los detalles abiertos primero
         document.querySelectorAll('.artista-detalles').forEach(detalle => {
@@ -57,334 +232,315 @@ verMasBtns.forEach(btn => {
 cerrarDetallesBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         const detalles = e.target.closest('.artista-detalles');
-        detalles.classList.remove('active');
+        if (detalles) {
+            detalles.classList.remove('active');
+        }
     });
 });
 
-// ===== GALERÍA INTERACTIVA =====
+// ===== GALERÍA INTERACTIVA MEJORADA =====
 
-const thumbnails = document.querySelectorAll('.thumbnail');
-const imagenPrincipal = document.getElementById('imagenPrincipal');
-const imageCaption = document.querySelector('.image-caption');
-const captionTitle = document.querySelector('.image-caption h3');
-const captionDescription = document.querySelector('.image-caption p');
+const initGaleria = () => {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const imageCaption = document.querySelector('.image-caption');
+    const captionTitle = document.querySelector('.image-caption h3');
+    const captionDescription = document.querySelector('.image-caption p');
 
-// Datos de las imágenes para los títulos y descripciones
-const galeriaData = {
-    0: {
-        titulo: "Popart",
-        descripcion: "Composiciones coloridas que exaltan la cultura popular mediante símbolos y contrastes."
-    },
-    1: {
-        titulo: "Autoretrato", 
-        descripcion: "Representaciones personales que revelan identidad, emoción y mirada propia."
-    },
-    2: {
-        titulo: "Mural urbano",
-        descripcion: "Murales urbanos que llenan la ciudad de expresión y vida."
-    },
-    3: {
-        titulo: "Surrealismo",
-        descripcion: "Escenas oníricas que mezclan realidad y fantasía para provocar una percepción distinta."
-    },
-    4: {
-        titulo: "Manga",
-        descripcion: "Historias ilustradas que combinan emoción, acción y estética única."
-    },
-    5: {
-        titulo: "Graphic design",
-        descripcion: "Creatividad visual que comunica ideas con estilo e impacto."
-    }
-};
+    if (!thumbnails.length || !imageCaption) return;
 
-// Pre-cargar imágenes para transición suave
-const preloadImages = () => {
-    thumbnails.forEach(thumb => {
-        const img = new Image();
-        img.src = thumb.src;
-    });
-};
+    // Datos de las imágenes para los títulos y descripciones
+    const galeriaData = {
+        0: {
+            titulo: "Popart",
+            descripcion: "Composiciones coloridas que exaltan la cultura popular mediante símbolos y contrastes."
+        },
+        1: {
+            titulo: "Autoretrato", 
+            descripcion: "Representaciones personales que revelan identidad, emoción y mirada propia."
+        },
+        2: {
+            titulo: "Mural urbano",
+            descripcion: "Murales urbanos que llenan la ciudad de expresión y vida."
+        },
+        3: {
+            titulo: "Surrealismo",
+            descripcion: "Escenas oníricas que mezclan realidad y fantasía para provocar una percepción distinta."
+        },
+        4: {
+            titulo: "Manga",
+            descripcion: "Historias ilustradas que combinan emoción, acción y estética única."
+        },
+        5: {
+            titulo: "Graphic design",
+            descripcion: "Creatividad visual que comunica ideas con estilo e impacto."
+        }
+    };
 
-// Llamar a la pre-carga cuando la página esté lista
-window.addEventListener('load', preloadImages);
-
-// Función para animación de texto con deslizamiento
-const animateCaptionText = (newTitle, newDescription) => {
-    // Animación de salida del texto actual
-    captionTitle.style.transform = 'translateX(-20px)';
-    captionTitle.style.opacity = '0';
-    
-    captionDescription.style.transform = 'translateX(-20px)';
-    captionDescription.style.opacity = '0';
-    
-    setTimeout(() => {
-        // Cambiar el texto
-        captionTitle.textContent = newTitle;
-        captionDescription.textContent = newDescription;
-        
-        // Animación de entrada del nuevo texto
-        captionTitle.style.transform = 'translateX(0)';
-        captionTitle.style.opacity = '1';
-        
-        captionDescription.style.transform = 'translateX(0)';
-        captionDescription.style.opacity = '1';
-    }, 300);
-};
-
-// Crear elementos de imagen para transición suave
-const crearImagenesTransicion = () => {
-    const galeriaMain = document.querySelector('.galeria-main');
-    
-    // Crear contenedor para imágenes de transición
-    const imagenesContainer = document.createElement('div');
-    imagenesContainer.className = 'imagenes-transicion-container';
-    imagenesContainer.style.position = 'relative';
-    imagenesContainer.style.height = '300px';
-    
-    // Crear imagen principal activa
-    const imgActive = document.createElement('img');
-    imgActive.src = thumbnails[0].src;
-    imgActive.alt = "Imagen activa galería";
-    imgActive.className = 'active';
-    imagenesContainer.appendChild(imgActive);
-    
-    // Reemplazar la imagen principal por el contenedor
-    const oldImg = document.getElementById('imagenPrincipal');
-    galeriaMain.replaceChild(imagenesContainer, oldImg);
-    
-    return imagenesContainer;
-};
-
-// Inicializar galería con transición suave
-const initGaleriaSuave = () => {
-    const contenedorImagenes = crearImagenesTransicion();
-    let imagenActiva = contenedorImagenes.querySelector('.active');
-    
-    thumbnails.forEach((thumb, index) => {
-        thumb.addEventListener('click', () => {
-            // Remover clase active de todas las miniaturas
-            thumbnails.forEach(t => t.classList.remove('active'));
-            
-            // Agregar clase active a la miniatura clickeada
-            thumb.classList.add('active');
-            
-            // Crear nueva imagen para transición
-            const nuevaImagen = document.createElement('img');
-            nuevaImagen.src = thumb.src;
-            nuevaImagen.alt = thumb.alt;
-            nuevaImagen.style.opacity = '0';
-            nuevaImagen.style.transform = 'scale(1.02)';
-            
-            contenedorImagenes.appendChild(nuevaImagen);
-            
-            // Pequeño delay para asegurar que el navegador procesó el nuevo elemento
-            setTimeout(() => {
-                // Transición de entrada de nueva imagen
-                nuevaImagen.style.opacity = '1';
-                nuevaImagen.style.transform = 'scale(1)';
-                
-                // Transición de salida de imagen anterior
-                imagenActiva.style.opacity = '0';
-                imagenActiva.style.transform = 'scale(0.98)';
-                
-                // Animación del texto con deslizamiento
-                const data = galeriaData[index];
-                animateCaptionText(data.titulo, data.descripcion);
-                
-                // Remover imagen anterior después de la transición
-                setTimeout(() => {
-                    if (imagenActiva.parentNode) {
-                        imagenActiva.parentNode.removeChild(imagenActiva);
-                    }
-                    imagenActiva = nuevaImagen;
-                    imagenActiva.classList.add('active');
-                }, 500);
-            }, 10);
+    // Pre-cargar imágenes para transición suave
+    const preloadImages = () => {
+        thumbnails.forEach(thumb => {
+            const img = new Image();
+            img.src = thumb.src;
         });
-    });
-    
-    return contenedorImagenes;
-};
+    };
 
-// Inicializar galería cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', initGaleriaSuave);
-
-// Carrusel automático mejorado para la galería (con pausa más larga)
-let currentImageIndex = 0;
-let carouselInterval;
-
-const startCarousel = () => {
-    carouselInterval = setInterval(() => {
-        currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
+    // Función para animación de texto con deslizamiento
+    const animateCaptionText = (newTitle, newDescription) => {
+        if (!captionTitle || !captionDescription) return;
         
-        // Simular click en la miniatura correspondiente
-        const event = new Event('click');
-        thumbnails[currentImageIndex].dispatchEvent(event);
-    }, 3000); // Aumentado a 6 segundos (6000 ms)
+        // Animación de salida del texto actual
+        captionTitle.style.transform = 'translateX(-20px)';
+        captionTitle.style.opacity = '0';
+        
+        captionDescription.style.transform = 'translateX(-20px)';
+        captionDescription.style.opacity = '0';
+        
+        setTimeout(() => {
+            // Cambiar el texto
+            captionTitle.textContent = newTitle;
+            captionDescription.textContent = newDescription;
+            
+            // Animación de entrada del nuevo texto
+            captionTitle.style.transform = 'translateX(0)';
+            captionTitle.style.opacity = '1';
+            
+            captionDescription.style.transform = 'translateX(0)';
+            captionDescription.style.opacity = '1';
+        }, 300);
+    };
+
+    // Crear elementos de imagen para transición suave
+    const crearImagenesTransicion = () => {
+        const galeriaMain = document.querySelector('.galeria-main');
+        const oldImg = document.getElementById('imagenPrincipal');
+        
+        if (!galeriaMain || !oldImg) return null;
+        
+        // Crear contenedor para imágenes de transición
+        const imagenesContainer = document.createElement('div');
+        imagenesContainer.className = 'imagenes-transicion-container';
+        imagenesContainer.style.position = 'relative';
+        imagenesContainer.style.height = '300px';
+        
+        // Crear imagen principal activa
+        const imgActive = document.createElement('img');
+        imgActive.src = thumbnails[0].src;
+        imgActive.alt = "Imagen activa galería";
+        imgActive.className = 'active';
+        imagenesContainer.appendChild(imgActive);
+        
+        // Reemplazar la imagen principal por el contenedor
+        galeriaMain.replaceChild(imagenesContainer, oldImg);
+        
+        return imagenesContainer;
+    };
+
+    // Inicializar galería con transición suave
+    const initGaleriaSuave = () => {
+        const contenedorImagenes = crearImagenesTransicion();
+        if (!contenedorImagenes) return;
+        
+        let imagenActiva = contenedorImagenes.querySelector('.active');
+        
+        thumbnails.forEach((thumb, index) => {
+            thumb.addEventListener('click', () => {
+                // Remover clase active de todas las miniaturas
+                thumbnails.forEach(t => t.classList.remove('active'));
+                
+                // Agregar clase active a la miniatura clickeada
+                thumb.classList.add('active');
+                
+                // Crear nueva imagen para transición
+                const nuevaImagen = document.createElement('img');
+                nuevaImagen.src = thumb.src;
+                nuevaImagen.alt = thumb.alt;
+                nuevaImagen.style.opacity = '0';
+                nuevaImagen.style.transform = 'scale(1.02)';
+                
+                contenedorImagenes.appendChild(nuevaImagen);
+                
+                // Pequeño delay para asegurar que el navegador procesó el nuevo elemento
+                setTimeout(() => {
+                    // Transición de entrada de nueva imagen
+                    nuevaImagen.style.opacity = '1';
+                    nuevaImagen.style.transform = 'scale(1)';
+                    
+                    // Transición de salida de imagen anterior
+                    imagenActiva.style.opacity = '0';
+                    imagenActiva.style.transform = 'scale(0.98)';
+                    
+                    // Animación del texto con deslizamiento
+                    const data = galeriaData[index];
+                    animateCaptionText(data.titulo, data.descripcion);
+                    
+                    // Remover imagen anterior después de la transición
+                    setTimeout(() => {
+                        if (imagenActiva.parentNode) {
+                            imagenActiva.parentNode.removeChild(imagenActiva);
+                        }
+                        imagenActiva = nuevaImagen;
+                        imagenActiva.classList.add('active');
+                    }, 500);
+                }, 10);
+            });
+        });
+        
+        return contenedorImagenes;
+    };
+
+    // Carrusel automático mejorado para la galería
+    let currentImageIndex = 0;
+    let carouselInterval;
+
+    const startCarousel = () => {
+        carouselInterval = setInterval(() => {
+            currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
+            
+            // Simular click en la miniatura correspondiente
+            const event = new Event('click');
+            thumbnails[currentImageIndex].dispatchEvent(event);
+        }, 6000); // 6 segundos entre cambios
+    };
+
+    // Pausar carrusel al interactuar con la galería
+    const pausarCarrusel = () => {
+        if (carouselInterval) {
+            clearInterval(carouselInterval);
+        }
+    };
+
+    const reanudarCarrusel = () => {
+        pausarCarrusel();
+        setTimeout(startCarousel, 12000); // Reanudar después de 12 segundos
+    };
+
+    // Agregar event listeners para pausar/reanudar
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('mouseenter', pausarCarrusel);
+        thumb.addEventListener('click', pausarCarrusel);
+        thumb.addEventListener('mouseleave', reanudarCarrusel);
+    });
+
+    // Inicializar galería
+    const contenedor = initGaleriaSuave();
+    
+    // Pre-cargar imágenes y iniciar carrusel
+    window.addEventListener('load', () => {
+        preloadImages();
+        setTimeout(startCarousel, 3000);
+    });
 };
-
-// Pausar carrusel al interactuar con la galería
-const pausarCarrusel = () => {
-    if (carouselInterval) {
-        clearInterval(carouselInterval);
-    }
-};
-
-const reanudarCarrusel = () => {
-    pausarCarrusel();
-    setTimeout(startCarousel, 5000); 
-};
-
-// Agregar event listeners para pausar/reanudar
-thumbnails.forEach(thumb => {
-    thumb.addEventListener('mouseenter', pausarCarrusel);
-    thumb.addEventListener('click', pausarCarrusel);
-    thumb.addEventListener('mouseleave', reanudarCarrusel);
-});
-
-// Iniciar carrusel después de 3 segundos
-setTimeout(startCarousel, 1500);
-
-// Iniciar carrusel después de 3 segundos
-setTimeout(startCarousel, 1500);
 
 // ===== MODAL DE EVENTOS =====
 
-const eventoDetalleBtns = document.querySelectorAll('.evento-detalle-btn');
-const eventoModal = document.getElementById('eventoModal');
-const closeModal = document.querySelector('.close-modal');
-const modalTitulo = document.getElementById('modalTitulo');
-const modalDescripcion = document.getElementById('modalDescripcion');
-const registroBtn = document.getElementById('registroBtn');
+const initEventosModal = () => {
+    const eventoDetalleBtns = document.querySelectorAll('.evento-detalle-btn');
+    const eventoModal = document.getElementById('eventoModal');
+    const closeModal = document.querySelector('.close-modal');
+    const modalTitulo = document.getElementById('modalTitulo');
+    const modalDescripcion = document.getElementById('modalDescripcion');
+    const registroBtn = document.getElementById('registroBtn');
 
-// Datos de los eventos
-const eventosData = {
-    1: {
-        titulo: "Festival de Arte Callejero",
-        descripcion: "Un evento anual que reúne a los mejores artistas urbanos de la ciudad. Incluye talleres, exposiciones en vivo y competencias de graffiti. No te pierdas esta celebración del arte callejero en la Plaza Central."
-    },
-    2: {
-        titulo: "Batalla de Gallos Urbanos",
-        descripcion: "Competencia de freestyle rap donde los mejores MCs de la escena urbana se enfrentan en batallas épicas. Jurado especializado, premios en efectivo y mucha energía urbana en el Centro Cultural."
-    },
-    3: {
-        titulo: 'Exposición "Graffiti con Causa"',
-        descripcion: "Exposición que muestra cómo el graffiti puede ser una herramienta de cambio social. Obras de artistas que utilizan el arte urbano para crear conciencia sobre problemas sociales y ambientales."
+    if (!eventoModal || !modalTitulo || !modalDescripcion) return;
+
+    // Datos de los eventos
+    const eventosData = {
+        1: {
+            titulo: "Festival de Arte Callejero",
+            descripcion: "Un evento anual que reúne a los mejores artistas urbanos de la ciudad. Incluye talleres, exposiciones en vivo y competencias de graffiti. No te pierdas esta celebración del arte callejero en la Plaza Central."
+        },
+        2: {
+            titulo: "Batalla de Gallos Urbanos",
+            descripcion: "Competencia de freestyle rap donde los mejores MCs de la escena urbana se enfrentan en batallas épicas. Jurado especializado, premios en efectivo y mucha energía urbana en el Centro Cultural."
+        },
+        3: {
+            titulo: 'Exposición "Graffiti con Causa"',
+            descripcion: "Exposición que muestra cómo el graffiti puede ser una herramienta de cambio social. Obras de artistas que utilizan el arte urbano para crear conciencia sobre problemas sociales y ambientales."
+        }
+    };
+
+    eventoDetalleBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const eventoId = e.target.getAttribute('data-evento');
+            const evento = eventosData[eventoId];
+            
+            if (!evento) return;
+            
+            modalTitulo.textContent = evento.titulo;
+            modalDescripcion.textContent = evento.descripcion;
+            
+            eventoModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll
+        });
+    });
+
+    // Cerrar modal
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            eventoModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    // Cerrar modal al hacer clic fuera
+    eventoModal.addEventListener('click', (e) => {
+        if (e.target === eventoModal) {
+            eventoModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Botón de registro con efecto
+    if (registroBtn) {
+        registroBtn.addEventListener('click', () => {
+            registroBtn.textContent = '¡Registrado!';
+            registroBtn.style.background = 'linear-gradient(45deg, var(--accent), var(--blue))';
+            
+            setTimeout(() => {
+                eventoModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
+                // Restaurar botón después de 2 segundos
+                setTimeout(() => {
+                    registroBtn.textContent = 'Registrarse';
+                    registroBtn.style.background = 'linear-gradient(45deg, var(--highlight), var(--primary))';
+                }, 2000);
+            }, 1000);
+        });
     }
 };
-
-eventoDetalleBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        const eventoId = e.target.getAttribute('data-evento');
-        const evento = eventosData[eventoId];
-        
-        modalTitulo.textContent = evento.titulo;
-        modalDescripcion.textContent = evento.descripcion;
-        
-        eventoModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevenir scroll
-    });
-});
-
-// Cerrar modal
-closeModal.addEventListener('click', () => {
-    eventoModal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-});
-
-// Cerrar modal al hacer clic fuera
-eventoModal.addEventListener('click', (e) => {
-    if (e.target === eventoModal) {
-        eventoModal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-});
-
-// Botón de registro con efecto
-registroBtn.addEventListener('click', () => {
-    registroBtn.textContent = '¡Registrado!';
-    registroBtn.style.background = 'linear-gradient(45deg, var(--accent), var(--blue))';
-    
-    setTimeout(() => {
-        eventoModal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-        
-        // Restaurar botón después de 2 segundos
-        setTimeout(() => {
-            registroBtn.textContent = 'Registrarse';
-            registroBtn.style.background = 'linear-gradient(45deg, var(--highlight), var(--primary))';
-        }, 2000);
-    }, 1000);
-});
 
 // ===== SELECTOR DE TEMA DINÁMICO =====
 
-const themeButtons = document.querySelectorAll('.theme-btn');
 
-themeButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-        const theme = e.target.getAttribute('data-theme');
-        
-        // Remover todas las clases de tema
-        document.body.classList.remove('theme-dark', 'theme-vibrant', 'theme-graffiti');
-        
-        // Aplicar tema seleccionado
-        if (theme !== 'default') {
-            document.body.classList.add(`theme-${theme}`);
-        }
-        
-        // Efecto visual en el botón clickeado
-        themeButtons.forEach(btn => btn.style.border = '2px solid transparent');
-        e.target.style.border = `2px solid var(--accent)`;
-        
-        // Guardar preferencia en localStorage
-        localStorage.setItem('preferredTheme', theme);
-    });
-});
-
-// Cargar tema guardado al cargar la página
-window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('preferredTheme');
-    if (savedTheme) {
-        document.body.classList.remove('theme-dark', 'theme-vibrant', 'theme-graffiti');
-        if (savedTheme !== 'default') {
-            document.body.classList.add(`theme-${savedTheme}`);
-        }
-        
-        // Resaltar botón del tema guardado
-        themeButtons.forEach(btn => {
-            if (btn.getAttribute('data-theme') === savedTheme) {
-                btn.style.border = `2px solid var(--accent)`;
-            }
-        });
-    }
-});
 
 // ===== ANIMACIONES AL SCROLL =====
 
-// Observador de intersección para animaciones al hacer scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+const initScrollAnimations = () => {
+    // Observador de intersección para animaciones al hacer scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Aplicar a elementos que queremos animar
+    const animatedElements = document.querySelectorAll('.artista-card, .evento-item, .tendencia-card');
+    animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(el);
     });
-}, observerOptions);
-
-// Aplicar a elementos que queremos animar
-const animatedElements = document.querySelectorAll('.artista-card, .evento-item, .tendencia-card');
-animatedElements.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
-});
+};
 
 // ===== FUNCIÓN AVANZADA: PROMESA CON ASYNC/AWAIT =====
 
@@ -465,14 +621,6 @@ const mostrarNotificacion = (mensaje, tipo = 'info') => {
         }, 300);
     }, 3000);
 };
-
-// Cargar artistas cuando la página esté lista
-window.addEventListener('load', async () => {
-    const artistas = await cargarArtistas();
-    if (artistas.length > 0) {
-        mostrarNotificacion('¡Datos de artistas cargados correctamente!', 'info');
-    }
-});
 
 // ===== EFECTO DE PARTICULAS INTERACTIVAS =====
 
@@ -563,144 +711,81 @@ window.addEventListener('scroll', debounce(() => {
     });
 }, 10));
 
-// ===== NAVEGACIÓN MEJORADA CON FLECHAS DESLIZANTES =====
+// ===== INICIALIZACIÓN GENERAL =====
 
-const initNavScroll = () => {
-    const navMenu = document.getElementById('navMenu');
-    const navArrowLeft = document.getElementById('navArrowLeft');
-    const navArrowRight = document.getElementById('navArrowRight');
-    const navContainer = document.querySelector('.nav-container');
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar todas las funcionalidades
+    initDynamicHeader();
+    initNavScroll();
+    initSmoothScroll();
+    initGaleria();
+    initEventosModal();
+    initThemeSelector();
+    initScrollAnimations();
     
-    if (!navMenu || !navArrowLeft || !navArrowRight) return;
-    
-    let scrollPosition = 0;
-    const scrollStep = 150;
-    
-    // Función para actualizar la visibilidad de las flechas
-    const updateArrowVisibility = () => {
-        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
-        
-        // Flecha izquierda
-        if (scrollPosition <= 0) {
-            navArrowLeft.classList.add('disabled');
-        } else {
-            navArrowLeft.classList.remove('disabled');
+    // Cargar datos de artistas cuando la página esté lista
+    window.addEventListener('load', async () => {
+        const artistas = await cargarArtistas();
+        if (artistas.length > 0) {
+            mostrarNotificacion('¡Datos de artistas cargados correctamente!', 'info');
         }
-        
-        // Flecha derecha
-        if (scrollPosition >= maxScroll) {
-            navArrowRight.classList.add('disabled');
-        } else {
-            navArrowRight.classList.remove('disabled');
-        }
-        
-        // Ocultar flechas si no hay overflow
-        if (navMenu.scrollWidth <= navContainer.clientWidth) {
-            navArrowLeft.style.display = 'none';
-            navArrowRight.style.display = 'none';
-        } else {
-            navArrowLeft.style.display = 'flex';
-            navArrowRight.style.display = 'flex';
-        }
-    };
-    
-    // Función para desplazar el menú
-    const scrollMenu = (direction) => {
-        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
-        
-        if (direction === 'left') {
-            scrollPosition = Math.max(0, scrollPosition - scrollStep);
-        } else {
-            scrollPosition = Math.min(maxScroll, scrollPosition + scrollStep);
-        }
-        
-        navMenu.style.transform = `translateX(-${scrollPosition}px)`;
-        updateArrowVisibility();
-    };
-    
-    // Event listeners para las flechas
-    navArrowLeft.addEventListener('click', () => scrollMenu('left'));
-    navArrowRight.addEventListener('click', () => scrollMenu('right'));
-    
-    // También permitir desplazamiento con rueda del mouse
-    navContainer.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
-        
-        if (e.deltaY > 0) {
-            scrollPosition = Math.min(maxScroll, scrollPosition + scrollStep);
-        } else {
-            scrollPosition = Math.max(0, scrollPosition - scrollStep);
-        }
-        
-        navMenu.style.transform = `translateX(-${scrollPosition}px)`;
-        updateArrowVisibility();
     });
-    
-    // Actualizar visibilidad al cargar y al redimensionar
-    window.addEventListener('load', updateArrowVisibility);
-    window.addEventListener('resize', updateArrowVisibility);
-    
-    // Inicializar estado
-    updateArrowVisibility();
-};
+});
 
-// Inicializar navegación mejorada cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', initNavScroll);
+// ===== SELECTOR DE TEMA DINÁMICO MEJORADO =====
 
-// ===== SCROLL SUAVE MEJORADO CON INDICADOR ACTIVO =====
+const initThemeSelector = () => {
+    const themeButtons = document.querySelectorAll('.theme-btn');
 
-const initSmoothScroll = () => {
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section[id]');
-    
-    // Función para actualizar el enlace activo
-    const updateActiveLink = () => {
-        let current = '';
-        const scrollY = window.pageYOffset;
-        
-        sections.forEach(section => {
-            const sectionHeight = section.offsetHeight;
-            const sectionTop = section.offsetTop - 100;
+    themeButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const theme = e.target.getAttribute('data-theme');
             
-            if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-    };
-    
-    // Event listeners para scroll suave
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
+            // Remover todas las clases de tema
+            document.body.classList.remove('theme-dark', 'theme-vibrant', 'theme-graffiti');
             
-            if (targetSection) {
-                // Remover activo de todos los enlaces
-                navLinks.forEach(l => l.classList.remove('active'));
-                // Agregar activo al enlace clickeado
-                link.classList.add('active');
-                
-                targetSection.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+            // Aplicar tema seleccionado
+            if (theme !== 'default') {
+                document.body.classList.add(`theme-${theme}`);
             }
+            
+            // Efecto visual en el botón clickeado
+            themeButtons.forEach(btn => {
+                btn.style.border = '2px solid transparent';
+                btn.style.background = 'rgba(255, 255, 255, 0.1)';
+            });
+            
+            e.target.style.border = `2px solid var(--accent)`;
+            e.target.style.background = 'var(--primary)';
+            
+            // Forzar actualización del header
+            const header = document.getElementById('mainHeader');
+            if (header) {
+                header.style.animation = 'none';
+                setTimeout(() => {
+                    header.style.animation = 'headerSlideDown 0.6s ease-out';
+                }, 10);
+            }
+            
+            // Guardar preferencia en localStorage
+            localStorage.setItem('preferredTheme', theme);
         });
     });
-    
-    // Actualizar enlace activo al hacer scroll
-    window.addEventListener('scroll', updateActiveLink);
-    window.addEventListener('load', updateActiveLink);
-};
 
-// Inicializar scroll suave
-document.addEventListener('DOMContentLoaded', initSmoothScroll);
+    // Cargar tema guardado al cargar la página
+    const savedTheme = localStorage.getItem('preferredTheme');
+    if (savedTheme) {
+        document.body.classList.remove('theme-dark', 'theme-vibrant', 'theme-graffiti');
+        if (savedTheme !== 'default') {
+            document.body.classList.add(`theme-${savedTheme}`);
+        }
+        
+        // Resaltar botón del tema guardado
+        themeButtons.forEach(btn => {
+            if (btn.getAttribute('data-theme') === savedTheme) {
+                btn.style.border = `2px solid var(--accent)`;
+                btn.style.background = 'var(--primary)';
+            }
+        });
+    }
+};
