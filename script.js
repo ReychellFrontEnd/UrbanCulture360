@@ -73,7 +73,7 @@ const captionDescription = document.querySelector('.image-caption p');
 const galeriaData = {
     0: {
         titulo: "Popart",
-        descripcion: "Símbolo vibrante del arte pop"
+        descripcion: "Composiciones coloridas que exaltan la cultura popular mediante símbolos y contrastes."
     },
     1: {
         titulo: "Autoretrato", 
@@ -85,7 +85,7 @@ const galeriaData = {
     },
     3: {
         titulo: "Surrealismo",
-        descripcion: "Sueños visuales que fusionan lo real con lo imposible"
+        descripcion: "Escenas oníricas que mezclan realidad y fantasía para provocar una percepción distinta."
     },
     4: {
         titulo: "Manga",
