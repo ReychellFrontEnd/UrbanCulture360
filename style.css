@@ -530,7 +530,7 @@ body {
   box-shadow: 0 5px 15px rgba(255, 0, 102, 0.4);
 }
 
-/* ===== GALERÍA INTERACTIVA ===== */
+/* ===== GALERÍA INTERACTIVA CON TRANSICIÓN SUAVE ===== */
 .galeria-section {
   padding: var(--spacing-lg) var(--spacing-sm);
 }
@@ -538,6 +538,7 @@ body {
 .galeria-container {
   max-width: 800px;
   margin: 0 auto;
+  position: relative;
 }
 
 .galeria-main {
@@ -545,22 +546,38 @@ body {
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
+  min-height: 350px;
 }
 
 .galeria-main img {
   width: 100%;
-  height: 425px;
+  height: 300px;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s ease;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform: scale(1.02);
 }
 
-/* MEJORAS EN LA GALERÍA */
+.galeria-main img.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+/* MEJORAS EN LA GALERÍA CON TRANSICIÓN SUAVE */
 .image-caption {
   padding: 15px;
   text-align: center;
   background: rgba(0, 0, 0, 0.7);
   margin-top: -5px;
+  position: relative;
+  z-index: 3;
+  transition: all 0.5s ease;
 }
 
 .image-caption h3 {
@@ -568,11 +585,13 @@ body {
   font-family: var(--font-heading);
   margin-bottom: 5px;
   font-size: 1.2rem;
+  transition: all 0.5s ease;
 }
 
 .image-caption p {
   opacity: 0.9;
   font-size: 0.9rem;
+  transition: all 0.5s ease;
 }
 
 .thumbnail-item {
@@ -580,6 +599,12 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.thumbnail-item:hover {
+  transform: translateY(-5px);
 }
 
 .thumbnail-item span {
@@ -587,6 +612,12 @@ body {
   color: var(--light);
   opacity: 0.8;
   text-align: center;
+  transition: all 0.3s ease;
+}
+
+.thumbnail-item:hover span {
+  opacity: 1;
+  color: var(--accent);
 }
 
 .galeria-thumbnails {
@@ -603,14 +634,34 @@ body {
   border-radius: var(--border-radius);
   cursor: pointer;
   opacity: 0.7;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border: 2px solid transparent;
+  filter: grayscale(30%);
 }
 
-.thumbnail:hover, .thumbnail.active {
+.thumbnail:hover {
+  opacity: 0.9;
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+.thumbnail.active {
   opacity: 1;
   border: 2px solid var(--accent);
-  transform: scale(1.05);
+  transform: scale(1.08);
+  filter: grayscale(0%);
+  box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+}
+
+/* Efecto de carga suave para las imágenes */
+.galeria-main img.loading {
+  animation: pulseLoading 1.5s infinite;
+}
+
+@keyframes pulseLoading {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.3; }
 }
 
 /* ===== SECCIÓN TENDENCIAS ===== */
@@ -886,4 +937,66 @@ body.theme-graffiti .section-title::after {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* ===== MEJORAS PARA LA GALERÍA ===== */
+
+/* Banda negra fija */
+.image-caption {
+    position: relative;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(10px);
+    border-top: 2px solid var(--accent);
+    transition: all 0.4s ease;
+}
+
+/* Transiciones para el texto de la banda */
+.image-caption h3,
+.image-caption p {
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: block;
+}
+
+/* Contenedor de imágenes de transición */
+.imagenes-transicion-container {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.imagenes-transicion-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Efecto de brillo suave en hover para miniaturas */
+.thumbnail-item:hover .thumbnail {
+    filter: brightness(1.2) grayscale(0%);
+    transform: scale(1.08);
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+    .imagenes-transicion-container {
+        height: 250px;
+    }
+    
+    .image-caption {
+        padding: 12px;
+    }
+    
+    .image-caption h3 {
+        font-size: 1.1rem;
+    }
+    
+    .image-caption p {
+        font-size: 0.85rem;
+    }
 }

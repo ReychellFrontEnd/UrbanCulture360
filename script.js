@@ -61,10 +61,13 @@ cerrarDetallesBtns.forEach(btn => {
     });
 });
 
-// ===== GALERÍA INTERACTIVA =====
+// ===== GALERÍA INTERACTIVA MEJORADA =====
 
 const thumbnails = document.querySelectorAll('.thumbnail');
 const imagenPrincipal = document.getElementById('imagenPrincipal');
+const imageCaption = document.querySelector('.image-caption');
+const captionTitle = document.querySelector('.image-caption h3');
+const captionDescription = document.querySelector('.image-caption p');
 
 // Datos de las imágenes para los títulos y descripciones
 const galeriaData = {
@@ -94,40 +97,156 @@ const galeriaData = {
     }
 };
 
-thumbnails.forEach((thumb, index) => {
-    thumb.addEventListener('click', () => {
-        // Remover clase active de todas las miniaturas
-        thumbnails.forEach(t => t.classList.remove('active'));
-        
-        // Agregar clase active a la miniatura clickeada
-        thumb.classList.add('active');
-        
-        // Cambiar imagen principal con efecto de transición
-        imagenPrincipal.style.opacity = '0';
-        setTimeout(() => {
-            imagenPrincipal.src = thumb.src;
-            
-            // Actualizar título y descripción
-            const data = galeriaData[index];
-            document.querySelector('.image-caption h3').textContent = data.titulo;
-            document.querySelector('.image-caption p').textContent = data.descripcion;
-            
-            imagenPrincipal.style.opacity = '1';
-        }, 300);
+// Pre-cargar imágenes para transición suave
+const preloadImages = () => {
+    thumbnails.forEach(thumb => {
+        const img = new Image();
+        img.src = thumb.src;
     });
-});
-
-// Carrusel automático para la galería
-let currentImageIndex = 0;
-const startCarousel = () => {
-    setInterval(() => {
-        currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
-        thumbnails[currentImageIndex].click();
-    }, 4000);
 };
 
+// Llamar a la pre-carga cuando la página esté lista
+window.addEventListener('load', preloadImages);
+
+// Función para animación de texto con deslizamiento
+const animateCaptionText = (newTitle, newDescription) => {
+    // Animación de salida del texto actual
+    captionTitle.style.transform = 'translateX(-20px)';
+    captionTitle.style.opacity = '0';
+    
+    captionDescription.style.transform = 'translateX(-20px)';
+    captionDescription.style.opacity = '0';
+    
+    setTimeout(() => {
+        // Cambiar el texto
+        captionTitle.textContent = newTitle;
+        captionDescription.textContent = newDescription;
+        
+        // Animación de entrada del nuevo texto
+        captionTitle.style.transform = 'translateX(0)';
+        captionTitle.style.opacity = '1';
+        
+        captionDescription.style.transform = 'translateX(0)';
+        captionDescription.style.opacity = '1';
+    }, 300);
+};
+
+// Crear elementos de imagen para transición suave
+const crearImagenesTransicion = () => {
+    const galeriaMain = document.querySelector('.galeria-main');
+    
+    // Crear contenedor para imágenes de transición
+    const imagenesContainer = document.createElement('div');
+    imagenesContainer.className = 'imagenes-transicion-container';
+    imagenesContainer.style.position = 'relative';
+    imagenesContainer.style.height = '300px';
+    
+    // Crear imagen principal activa
+    const imgActive = document.createElement('img');
+    imgActive.src = thumbnails[0].src;
+    imgActive.alt = "Imagen activa galería";
+    imgActive.className = 'active';
+    imagenesContainer.appendChild(imgActive);
+    
+    // Reemplazar la imagen principal por el contenedor
+    const oldImg = document.getElementById('imagenPrincipal');
+    galeriaMain.replaceChild(imagenesContainer, oldImg);
+    
+    return imagenesContainer;
+};
+
+// Inicializar galería con transición suave
+const initGaleriaSuave = () => {
+    const contenedorImagenes = crearImagenesTransicion();
+    let imagenActiva = contenedorImagenes.querySelector('.active');
+    
+    thumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', () => {
+            // Remover clase active de todas las miniaturas
+            thumbnails.forEach(t => t.classList.remove('active'));
+            
+            // Agregar clase active a la miniatura clickeada
+            thumb.classList.add('active');
+            
+            // Crear nueva imagen para transición
+            const nuevaImagen = document.createElement('img');
+            nuevaImagen.src = thumb.src;
+            nuevaImagen.alt = thumb.alt;
+            nuevaImagen.style.opacity = '0';
+            nuevaImagen.style.transform = 'scale(1.02)';
+            
+            contenedorImagenes.appendChild(nuevaImagen);
+            
+            // Pequeño delay para asegurar que el navegador procesó el nuevo elemento
+            setTimeout(() => {
+                // Transición de entrada de nueva imagen
+                nuevaImagen.style.opacity = '1';
+                nuevaImagen.style.transform = 'scale(1)';
+                
+                // Transición de salida de imagen anterior
+                imagenActiva.style.opacity = '0';
+                imagenActiva.style.transform = 'scale(0.98)';
+                
+                // Animación del texto con deslizamiento
+                const data = galeriaData[index];
+                animateCaptionText(data.titulo, data.descripcion);
+                
+                // Remover imagen anterior después de la transición
+                setTimeout(() => {
+                    if (imagenActiva.parentNode) {
+                        imagenActiva.parentNode.removeChild(imagenActiva);
+                    }
+                    imagenActiva = nuevaImagen;
+                    imagenActiva.classList.add('active');
+                }, 500);
+            }, 10);
+        });
+    });
+    
+    return contenedorImagenes;
+};
+
+// Inicializar galería cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initGaleriaSuave);
+
+// Carrusel automático mejorado para la galería (con pausa más larga)
+let currentImageIndex = 0;
+let carouselInterval;
+
+const startCarousel = () => {
+    carouselInterval = setInterval(() => {
+        currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
+        
+        // Simular click en la miniatura correspondiente
+        const event = new Event('click');
+        thumbnails[currentImageIndex].dispatchEvent(event);
+    }, 3000); // Aumentado a 6 segundos (6000 ms)
+};
+
+// Pausar carrusel al interactuar con la galería
+const pausarCarrusel = () => {
+    if (carouselInterval) {
+        clearInterval(carouselInterval);
+    }
+};
+
+const reanudarCarrusel = () => {
+    pausarCarrusel();
+    setTimeout(startCarousel, 5000); 
+};
+
+// Agregar event listeners para pausar/reanudar
+thumbnails.forEach(thumb => {
+    thumb.addEventListener('mouseenter', pausarCarrusel);
+    thumb.addEventListener('click', pausarCarrusel);
+    thumb.addEventListener('mouseleave', reanudarCarrusel);
+});
+
 // Iniciar carrusel después de 3 segundos
-setTimeout(startCarousel, 3000);
+setTimeout(startCarousel, 1500);
+
+// Iniciar carrusel después de 3 segundos
+setTimeout(startCarousel, 1500);
 
 // ===== MODAL DE EVENTOS =====
 
