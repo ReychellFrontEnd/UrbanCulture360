@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultura Urbana 360 | Arte Callejero y Tendencias Urbanas</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Oswald:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header principal con navegación -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>CULTURA URBANA 360</h1>
+                <span class="tagline">Arte • Música • Tendencias</span>
+            </div>
+            
+            <!-- Menú de navegación horizontal -->
+            <nav class="nav">
+                <ul class="nav-menu-horizontal" id="navMenu">
+                    <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li><a href="#artistas" class="nav-link">Artistas</a></li>
+                    <li><a href="#eventos" class="nav-link">Eventos</a></li>
+                    <li><a href="#galeria" class="nav-link">Galería</a></li>
+                    <li><a href="#tendencias" class="nav-link">Tendencias</a></li>
+                    <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <!-- Sección Hero/Banner principal -->
+        <section id="inicio" class="hero">
+            <div class="hero-content">
+                <h2 class="hero-title">EXPLORA LA CULTURA URBANA EN 360 GRADOS</h2>
+                <p class="hero-text">Descubre el arte callejero, la música alternativa y las tendencias que están transformando las ciudades</p>
+                <button class="cta-button" id="explorarBtn">Explorar Ahora</button>
+            </div>
+            <div class="hero-visual">
+                <div class="color-blob blob-1"></div>
+                <div class="color-blob blob-2"></div>
+                <div class="color-blob blob-3"></div>
+            </div>
+        </section>
+
+        <!-- Sección de artistas destacados -->
+<section id="artistas" class="artistas-section">
+    <h2 class="section-title">ARTISTAS DESTACADOS</h2>
+    <div class="artistas-grid">
+
+        <!-- Vivienne Westwood -->
+        <article class="artista-card" data-artista="1">
+            <div class="artista-img">
+                <img src="images/artistas/VivienneWestwood.jpg" alt="Vivienne Westwood - Diseñadora y artista del movimiento punk">
+            </div>
+            <div class="artista-info">
+                <h3>Vivienne Westwood</h3>
+                <p>Icono del movimiento punk y una de las diseñadoras más influyentes del mundo. Su estilo combina rebeldía, cultura británica y crítica social.</p>
+                <button class="ver-mas-btn" data-target="artista1">Ver Obras</button>
+            </div>
+            <div class="artista-detalles" id="artista1">
+                <h4>Obras Destacadas</h4>
+                <ul>
+                    <li>"Pirate Collection" – Revolución estética inspirada en el estilo pirata (1981)</li>
+                    <li>"Punk Couture" – Propuesta estilística que redefinió la moda punk</li>
+                    <li>"Anglomania" – Fusión provocadora de tradición y modernidad británica</li>
+                </ul>
+                <button class="cerrar-detalles">Cerrar</button>
+            </div>
+        </article>
+
+        <!-- Rosalía -->
+        <article class="artista-card" data-artista="2">
+            <div class="artista-img">
+                <img src="images/artistas/Rosalia.jpg" alt="Rosalía - Cantante y productora">
+            </div>
+            <div class="artista-info">
+                <h3>Rosalía</h3>
+                <p>Cantante y productora que fusiona flamenco con pop, urbano y electrónica. Reconocida por su innovación visual y musical.</p>
+                <button class="ver-mas-btn" data-target="artista2">Ver Obras</button>
+            </div>
+            <div class="artista-detalles" id="artista2">
+                <h4>Obras Destacadas</h4>
+                <ul>
+                    <li>"El Mal Querer" – Álbum conceptual que redefinió el flamenco contemporáneo</li>
+                    <li>"Lux" – Su más reciente álbum que explora la espiritualidad y la feminidad</li>
+                    <li>"Pienso en tu Mirá" – Videoclip con una de sus puestas visuales más reconocidas</li>
+                </ul>
+                <button class="cerrar-detalles">Cerrar</button>
+            </div>
+        </article>
+
+        <!-- Paula Scher -->
+        <article class="artista-card" data-artista="3">
+            <div class="artista-img">
+                <img src="images/artistas/PaulaScher.jpg" alt="Paula Scher - Diseñadora gráfica y tipógrafa">
+            </div>
+            <div class="artista-info">
+                <h3>Paula Scher</h3>
+                <p>Diseñadora gráfica pionera en el uso expresivo de la tipografía. Miembro de Pentagram y referente mundial del diseño editorial.</p>
+                <button class="ver-mas-btn" data-target="artista3">Ver Obras</button>
+            </div>
+            <div class="artista-detalles" id="artista3">
+                <h4>Obras Destacadas</h4>
+                <ul>
+                    <li>"Mapas Tipográficos" – Serie icónica de mapas pintados a mano con tipografía</li>
+                    <li>"Identidad del MoMA" – Sistema visual para el Museo de Arte Moderno</li>
+                    <li>"Public Theater Posters" – Estilo único que marcó la gráfica cultural de Nueva York</li>
+                </ul>
+                <button class="cerrar-detalles">Cerrar</button>
+            </div>
+        </article>
+
+        <!-- Sade -->
+        <article class="artista-card" data-artista="4">
+            <div class="artista-img">
+                <img src="images/artistas/Sade.jpg" alt="Sade - Cantante y líder de la banda Sade">
+            </div>
+            <div class="artista-info">
+                <h3>Sade</h3>
+                <p>Cantante británica con un estilo elegante que mezcla soul, jazz y R&B. Conocida por su voz suave y estética minimalista.</p>
+                <button class="ver-mas-btn" data-target="artista4">Ver Obras</button>
+            </div>
+            <div class="artista-detalles" id="artista4">
+                <h4>Obras Destacadas</h4>
+                <ul>
+                    <li>"Smooth Operator" – Uno de sus sencillos más emblemáticos</li>
+                    <li>"Diamond Life" – Álbum debut considerado un clásico del soul moderno</li>
+                    <li>"No Ordinary Love" – Canción icónica con un videoclip estético y elegante</li>
+                </ul>
+                <button class="cerrar-detalles">Cerrar</button>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+
+        <!-- Sección de eventos -->
+        <section id="eventos" class="eventos-section">
+            <h2 class="section-title">PRÓXIMOS EVENTOS</h2>
+            <div class="eventos-timeline">
+                <div class="evento-item">
+                    <div class="evento-fecha">
+                        <span class="dia">15</span>
+                        <span class="mes">NOV</span>
+                    </div>
+                    <div class="evento-info">
+                        <h3>Festival de Arte Callejero</h3>
+                        <p>Plaza Central - 18:00 hrs</p>
+                        <button class="evento-detalle-btn" data-evento="1">Más Info</button>
+                    </div>
+                </div>
+
+                <div class="evento-item">
+                    <div class="evento-fecha">
+                        <span class="dia">22</span>
+                        <span class="mes">NOV</span>
+                    </div>
+                    <div class="evento-info">
+                        <h3>Batalla de Gallos Urbanos</h3>
+                        <p>Centro Cultural - 20:00 hrs</p>
+                        <button class="evento-detalle-btn" data-evento="2">Más Info</button>
+                    </div>
+                </div>
+
+                <div class="evento-item">
+                    <div class="evento-fecha">
+                        <span class="dia">05</span>
+                        <span class="mes">DEC</span>
+                    </div>
+                    <div class="evento-info">
+                        <h3>Exposición "Graffiti con Causa"</h3>
+                        <p>Galería Urbana - 10:00 a 20:00 hrs</p>
+                        <button class="evento-detalle-btn" data-evento="3">Más Info</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de detalles de evento -->
+            <div class="evento-modal" id="eventoModal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h3 id="modalTitulo"></h3>
+                    <p id="modalDescripcion"></p>
+                    <button class="registro-btn" id="registroBtn">Registrarse</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galería interactiva -->
+        <section id="galeria" class="galeria-section">
+            <h2 class="section-title">GALERÍA URBANA</h2>
+            <div class="galeria-container">
+                <div class="galeria-main">
+                    <img id="imagenPrincipal" src="images/galeria/popart.jpg" alt="popart - Simbolo vibrante del arte pop">
+                    <div class="image-caption">
+                        <h3>popart</h3>
+                        <p>Símbolo vibrante del arte pop</p>
+                    </div>
+                </div>
+                <div class="galeria-thumbnails">
+                    <div class="thumbnail-item">
+                        <img src="images/galeria/popart.jpg" alt="Popart" class="thumbnail active">
+                        <span>Popart</span>
+                    </div>
+                    <div class="thumbnail-item">
+                        <img src="images/galeria/fridakahlo_selfportrait.jpg" alt="Autoretrato" class="thumbnail">
+                        <span>Autoretrato</span>
+                    </div>
+                    <div class="thumbnail-item">
+                        <img src="images/galeria/mural_arte_urbano.jpg" alt="Mural urbano" class="thumbnail">
+                        <span>Mural urbano</span>
+                    </div>
+                    <div class="thumbnail-item">
+                        <img src="images/galeria/surrealismo.jpg" alt="Surrealismo" class="thumbnail">
+                        <span>Surrealismo</span>
+                    </div>
+                    <div class="thumbnail-item">
+                        <img src="images/galeria/Manga.jpg" alt="Manga" class="thumbnail">
+                        <span>Manga</span>
+                    </div>
+                    <div class="thumbnail-item">
+                        <img src="images/galeria/Graphic_design.jpg" alt="Graphic_design" class="thumbnail">
+                        <span>Graphic design</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de tendencias -->
+        <section id="tendencias" class="tendencias-section">
+            <h2 class="section-title">TENDENCIAS URBANAS</h2>
+            <div class="tendencias-grid">
+                <div class="tendencia-card">
+                    <h3>STREET WEAR</h3>
+                    <p>La moda urbana se fusiona con el arte callejero en las nuevas colecciones de otoño.</p>
+                    <span class="tendencia-tag">Moda</span>
+                </div>
+                <div class="tendencia-card">
+                    <h3>MUSICA ELECTRÓNICA</h3>
+                    <p>Los sonidos underground toman los espacios públicos en festivales improvisados.</p>
+                    <span class="tendencia-tag">Música</span>
+                </div>
+                <div class="tendencia-card">
+                    <h3>ARTIVISMO</h3>
+                    <p>El arte como herramienta de protesta y transformación social en las calles.</p>
+                    <span class="tendencia-tag">Arte</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Selector de tema de color -->
+        <section class="theme-selector">
+            <h3>PERSONALIZA TU EXPERIENCIA</h3>
+            <div class="theme-buttons">
+                <button class="theme-btn" data-theme="default">Tema Original</button>
+                <button class="theme-btn" data-theme="dark">Modo Nocturno</button>
+                <button class="theme-btn" data-theme="vibrant">Colores Vibrantes</button>
+                <button class="theme-btn" data-theme="graffiti">Estilo Graffiti</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CULTURA URBANA 360</h4>
+                    <p>Conectando artistas urbanos con amantes </p>
+                    <p>del arte callejero desde 2025.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>CONTACTO</h4>
+                    <p>reychellperdomo@gmail.com</p>
+                    <p>+1 234 567 890</p>
+                </div>
+                <div class="footer-section">
+                    <h4>SÍGUENOS</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">IG</a>
+                        <a href="#" class="social-link">FB</a>
+                        <a href="#" class="social-link">X</a>
+                        <a href="#" class="social-link">YT</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Cultura Urbana 360 by Reychell Perdomo. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
