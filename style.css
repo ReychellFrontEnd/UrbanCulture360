@@ -1000,3 +1000,240 @@ body.theme-graffiti .section-title::after {
         font-size: 0.85rem;
     }
 }
+
+/* ===== HEADER MEJORADO CON FRANJA OSCURA ===== */
+.header {
+    background: linear-gradient(135deg, var(--primary), var(--highlight));
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-dark-bar {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--primary);
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px var(--spacing-sm);
+}
+
+/* ===== NAVEGACIÓN MEJORADA CON FLECHAS ===== */
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.nav-container {
+    overflow: hidden;
+    max-width: calc(100vw - 120px);
+}
+
+.nav-menu-horizontal {
+    display: flex;
+    list-style: none;
+    gap: 8px;
+    padding: 5px 0;
+    transition: transform 0.3s ease;
+    width: max-content;
+}
+
+.nav-menu-horizontal li {
+    flex-shrink: 0;
+}
+
+.nav-link {
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: block;
+    text-align: center;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+}
+
+.nav-link:hover {
+    background: var(--primary);
+    color: var(--light);
+    transform: translateY(-2px);
+    border-color: var(--secondary);
+    box-shadow: 0 4px 12px rgba(106, 13, 173, 0.4);
+}
+
+.nav-link.active {
+    background: var(--primary);
+    color: var(--light);
+    border-color: var(--accent);
+}
+
+/* Flechas de navegación */
+.nav-arrow {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: var(--light);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.nav-arrow:hover {
+    background: var(--primary);
+    border-color: var(--accent);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-arrow svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Indicadores de estado de las flechas */
+.nav-arrow.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.nav-arrow.disabled:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===== RESPONSIVE MEJORADO ===== */
+@media (max-width: 1023px) {
+    .header .container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 12px var(--spacing-sm);
+    }
+    
+    .nav {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .nav-container {
+        max-width: calc(100vw - 100px);
+    }
+    
+    .nav-arrow {
+        display: flex;
+    }
+    
+    .nav-menu-horizontal {
+        gap: 6px;
+    }
+    
+    .nav-link {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .header .container {
+        padding: 10px var(--spacing-sm);
+    }
+    
+    .logo h1 {
+        font-size: 1.3rem;
+    }
+    
+    .tagline {
+        font-size: 0.65rem;
+    }
+    
+    .nav-container {
+        max-width: calc(100vw - 90px);
+    }
+    
+    .nav-link {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-arrow {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .nav-arrow svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .nav-menu-horizontal {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+    
+    .header .container {
+        padding: 18px var(--spacing-sm);
+    }
+}
+
+/* Efecto de scroll suave para enlaces activos */
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 80%;
+}
+
+/* Animación sutil para el header */
+@keyframes headerSlideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.header {
+    animation: headerSlideDown 0.5s ease-out;
+}

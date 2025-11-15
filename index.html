@@ -10,23 +10,39 @@
 <body>
     <!-- Header principal con navegación -->
     <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>CULTURA URBANA 360</h1>
-                <span class="tagline">Arte • Música • Tendencias</span>
+        <div class="header-dark-bar">
+            <div class="container">
+                <div class="logo">
+                    <h1>CULTURA URBANA 360</h1>
+                    <span class="tagline">Arte • Música • Tendencias</span>
+                </div>
+                
+                <!-- Menú de navegación horizontal con flechas -->
+                <nav class="nav">
+                    <button class="nav-arrow nav-arrow-left" id="navArrowLeft">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    
+                    <div class="nav-container">
+                        <ul class="nav-menu-horizontal" id="navMenu">
+                            <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                            <li><a href="#artistas" class="nav-link">Artistas</a></li>
+                            <li><a href="#eventos" class="nav-link">Eventos</a></li>
+                            <li><a href="#galeria" class="nav-link">Galería</a></li>
+                            <li><a href="#tendencias" class="nav-link">Tendencias</a></li>
+                            <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                        </ul>
+                    </div>
+                    
+                    <button class="nav-arrow nav-arrow-right" id="navArrowRight">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </nav>
             </div>
-            
-            <!-- Menú de navegación horizontal -->
-            <nav class="nav">
-                <ul class="nav-menu-horizontal" id="navMenu">
-                    <li><a href="#inicio" class="nav-link">Inicio</a></li>
-                    <li><a href="#artistas" class="nav-link">Artistas</a></li>
-                    <li><a href="#eventos" class="nav-link">Eventos</a></li>
-                    <li><a href="#galeria" class="nav-link">Galería</a></li>
-                    <li><a href="#tendencias" class="nav-link">Tendencias</a></li>
-                    <li><a href="#contacto" class="nav-link">Contacto</a></li>
-                </ul>
-            </nav>
         </div>
     </header>
 

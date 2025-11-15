@@ -61,7 +61,7 @@ cerrarDetallesBtns.forEach(btn => {
     });
 });
 
-// ===== GALERÍA INTERACTIVA MEJORADA =====
+// ===== GALERÍA INTERACTIVA =====
 
 const thumbnails = document.querySelectorAll('.thumbnail');
 const imagenPrincipal = document.getElementById('imagenPrincipal');
@@ -562,3 +562,145 @@ window.addEventListener('scroll', debounce(() => {
         element.style.transform = `translateY(${scrolled * speed * 0.1}px)`;
     });
 }, 10));
+
+// ===== NAVEGACIÓN MEJORADA CON FLECHAS DESLIZANTES =====
+
+const initNavScroll = () => {
+    const navMenu = document.getElementById('navMenu');
+    const navArrowLeft = document.getElementById('navArrowLeft');
+    const navArrowRight = document.getElementById('navArrowRight');
+    const navContainer = document.querySelector('.nav-container');
+    
+    if (!navMenu || !navArrowLeft || !navArrowRight) return;
+    
+    let scrollPosition = 0;
+    const scrollStep = 150;
+    
+    // Función para actualizar la visibilidad de las flechas
+    const updateArrowVisibility = () => {
+        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
+        
+        // Flecha izquierda
+        if (scrollPosition <= 0) {
+            navArrowLeft.classList.add('disabled');
+        } else {
+            navArrowLeft.classList.remove('disabled');
+        }
+        
+        // Flecha derecha
+        if (scrollPosition >= maxScroll) {
+            navArrowRight.classList.add('disabled');
+        } else {
+            navArrowRight.classList.remove('disabled');
+        }
+        
+        // Ocultar flechas si no hay overflow
+        if (navMenu.scrollWidth <= navContainer.clientWidth) {
+            navArrowLeft.style.display = 'none';
+            navArrowRight.style.display = 'none';
+        } else {
+            navArrowLeft.style.display = 'flex';
+            navArrowRight.style.display = 'flex';
+        }
+    };
+    
+    // Función para desplazar el menú
+    const scrollMenu = (direction) => {
+        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
+        
+        if (direction === 'left') {
+            scrollPosition = Math.max(0, scrollPosition - scrollStep);
+        } else {
+            scrollPosition = Math.min(maxScroll, scrollPosition + scrollStep);
+        }
+        
+        navMenu.style.transform = `translateX(-${scrollPosition}px)`;
+        updateArrowVisibility();
+    };
+    
+    // Event listeners para las flechas
+    navArrowLeft.addEventListener('click', () => scrollMenu('left'));
+    navArrowRight.addEventListener('click', () => scrollMenu('right'));
+    
+    // También permitir desplazamiento con rueda del mouse
+    navContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const maxScroll = navMenu.scrollWidth - navContainer.clientWidth;
+        
+        if (e.deltaY > 0) {
+            scrollPosition = Math.min(maxScroll, scrollPosition + scrollStep);
+        } else {
+            scrollPosition = Math.max(0, scrollPosition - scrollStep);
+        }
+        
+        navMenu.style.transform = `translateX(-${scrollPosition}px)`;
+        updateArrowVisibility();
+    });
+    
+    // Actualizar visibilidad al cargar y al redimensionar
+    window.addEventListener('load', updateArrowVisibility);
+    window.addEventListener('resize', updateArrowVisibility);
+    
+    // Inicializar estado
+    updateArrowVisibility();
+};
+
+// Inicializar navegación mejorada cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initNavScroll);
+
+// ===== SCROLL SUAVE MEJORADO CON INDICADOR ACTIVO =====
+
+const initSmoothScroll = () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    
+    // Función para actualizar el enlace activo
+    const updateActiveLink = () => {
+        let current = '';
+        const scrollY = window.pageYOffset;
+        
+        sections.forEach(section => {
+            const sectionHeight = section.offsetHeight;
+            const sectionTop = section.offsetTop - 100;
+            
+            if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    };
+    
+    // Event listeners para scroll suave
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                // Remover activo de todos los enlaces
+                navLinks.forEach(l => l.classList.remove('active'));
+                // Agregar activo al enlace clickeado
+                link.classList.add('active');
+                
+                targetSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Actualizar enlace activo al hacer scroll
+    window.addEventListener('scroll', updateActiveLink);
+    window.addEventListener('load', updateActiveLink);
+};
+
+// Inicializar scroll suave
+document.addEventListener('DOMContentLoaded', initSmoothScroll);
